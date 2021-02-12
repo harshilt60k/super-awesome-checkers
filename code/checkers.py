@@ -34,7 +34,7 @@ def makeMove(board,turn):
             return board
         else:
             print("Invalid move.")
-            makeMove(board,turn)
+            return makeMove(board,turn)
     #if it is player 2's turn, check if the piece is white and the resulting place is empty
     else:
         if board[-int(move[1])]==0 and board[-int(move[0])]=='w':
@@ -43,7 +43,7 @@ def makeMove(board,turn):
             return board
         else:
             print("Invalid move.")
-            makeMove(board,turn)
+            return makeMove(board,turn)
 
 
 #Print the current board
