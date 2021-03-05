@@ -4,7 +4,7 @@ Created on Thu Feb 11 21:14:09 2021
 
 @author: Jake
 """
-import piece
+from  setup import piece, board
 import numpy as np
 '''
 valid moves are index + 3,4,5 if black pieces
@@ -43,7 +43,7 @@ def makeMove(board,turn):
         if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
             board[-int(move[1])]=board[-int(move[0])]
             board[-int(move[1])].changeSpace(int(move[1]))
-            board[-int(move[0])]=piece.piece(int(move[0]),0)
+            board[-int(move[0])]=piece(int(move[0]),0)
             return board
         else:
             print("Invalid move.")
@@ -54,7 +54,7 @@ def makeMove(board,turn):
         if board[-int(move[1])].color==0 and board[-int(move[0])].color=='w' and (int(move[1]) in board[-int(move[0])].posMoves()) :
             board[-int(move[1])]=board[-int(move[0])]
             board[-int(move[1])].changeSpace(int(move[1]))
-            board[-int(move[0])]=piece.piece(int(move[0]),0)
+            board[-int(move[0])]=piece(int(move[0]),0)
             return board
         else:
             print("Invalid move.")
@@ -68,8 +68,8 @@ def makeJump(board, turn, move):
     #print(finalLocation)
     board[-int(finalLocation)]=board[-int(move[0])]
     board[-int(finalLocation)].changeSpace(int(finalLocation))
-    board[-int(move[0])]=piece.piece(int(move[0]),0)
-    board[-int(move[1])]=piece.piece(int(move[0]),0)
+    board[-int(move[0])]=piece(int(move[0]),0)
+    board[-int(move[1])]=piece(int(move[0]),0)
     return board
         
         
@@ -103,13 +103,13 @@ def drawP(board):
             count-=1
         rCount+=1
 #Initialize the board with values of 0 for 32 spaces
-
-p=[ piece.piece(x,0) for x in range(0,32)]
+p=board()
+"""p=[ piece.piece(x,0) for x in range(0,32)]
 for x in range(1,13):
     p[-x]=piece.piece(x,"b")
 for x in range(21,33):
     p[-x]=piece.piece(x,"w")
-
+"""
 
 #initialize the turn as 0
 turn=0
@@ -118,10 +118,10 @@ turn=0
 while True:
 
     #Print the board
-    drawP(p)
+    p.drawP()
     
     #ask for a move
-    p=makeMove(p,turn)
+    makeMove(p.board,turn)
 
     #Formatting print statements
     print()

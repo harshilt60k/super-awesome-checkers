@@ -107,10 +107,45 @@ class piece():
     
     def changeSpace(self,space):
         self.space=space
-
+        
+class board():
+    def __init__(self):
+        self.board=[ piece(x,0) for x in range(0,32)]
+        for x in range(1,13):
+            self.board[-x]=piece(x,"b")
+        for x in range(21,33):
+            self.board[-x]=piece(x,"w")
+        
+    def drawP(self):
+    #change the board into an array of arrays that represent the rows of the board
+        board=self.board
+        bb=np.reshape(board,(-1,4))
+        count=0
+        rCount=0    
+        #loop through the rows
+        for i in bb:
+            #loop through the elements of the rows
+            for j in range(0,len(i)):
+                i[j].setRow(rCount)
+                #if it is an even row, print a space before each piece
+                if count==0:
+                    print(' ',end='')
+                    print(i[j].getColor(),end='')
+                    #if it is an odd row, print a space after each piece
+                else:
+                    print(i[j].getColor(),end='')
+                    print(' ',end='')
+                    #after each row, print a new line
+            print()
+        #then change the row to the opposite type(odd or even)
+            if count==0:
+                count+=1
+            else:
+                count-=1
+            rCount+=1
     
     
-if __name__ == '__main__':
+"""if __name__ == '__main__':
     p=[ piece(x,0) for x in range(0,32)]
     for x in range(1,13):
         p[-x]=piece(x,"b")
@@ -144,5 +179,5 @@ if __name__ == '__main__':
 
     #print(p[11])
 
-    drawP(p)
+    drawP(p)"""
     
