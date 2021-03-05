@@ -23,13 +23,20 @@ print((-int(move[1])-4==-int(move[0])) or (-int(move[1])-5==-int(move[0])) or (-
 #Function that changes position on the board
 def makeMove(board,turn):
     #take the move as an input
-    mv=input("Enter move in format(11-15): ")
-    
+    mv=input("Enter move in format(11-15, 11x15 for jump): ")
+    if 'x' in mv:
+        move=mv.split("x")
+        if board[-int(move[0])].checkJump(board)[0]:
+            return makeJump(board,turn,move)
+        else:
+            print("Invalid jump.")
+            return makeMove(board, turn)
     move=mv.split("-")
     #use to check the movements of players since the table's outlook does not change
     #possiblePositions = possibleMovements(move,board)
-    print(move)
-    print(board[-int(move[0])].posMoves())
+    #print(move)
+    #print(board[-int(move[0])].posMoves())
+    #print(move)
     #if it is player 1's turn, check if the piece is black and the resulting place is empty
     if turn==0:
         #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
@@ -53,8 +60,22 @@ def makeMove(board,turn):
             print("Invalid move.")
             return makeMove(board,turn)
 
-
-
+def makeJump(board, turn, move):
+    #take the move as an input
+    finalLocation=board[-int(move[0])].checkJump(board)[1]
+    
+    #print(move)
+    #print(finalLocation)
+    board[-int(finalLocation)]=board[-int(move[0])]
+    board[-int(finalLocation)].changeSpace(int(finalLocation))
+    board[-int(move[0])]=piece.piece(int(move[0]),0)
+    board[-int(move[1])]=piece.piece(int(move[0]),0)
+    return board
+        
+        
+    
+        
+        
 def drawP(board):
     #change the board into an array of arrays that represent the rows of the board
     bb=np.reshape(board,(-1,4))
@@ -113,6 +134,7 @@ while True:
     print()
     print('-'*10)
     print()
+    
     #Change the turn to the next player's turn
     if turn==0:
         print("White's turn\n\n")
@@ -120,4 +142,3 @@ while True:
     else:
         print("Black's turn\n\n")
         turn=0
-
