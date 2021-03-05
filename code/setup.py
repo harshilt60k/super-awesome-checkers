@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on Fri Feb 19 13:19:54 2021
 
@@ -84,21 +83,70 @@ class piece():
         else:
             opposite='b'
             
-        if opposite == 'w':
-            if board[-int(moves[0])].getColor()==opposite:
-                if board[-int(self.space+7)].getColor()==0:
-                    return [True,self.space+7]
-            if board[-int(moves[-1])].getColor()==opposite:
-                if board[-int(self.space+9)].getColor()==0:
-                    return [True,self.space+9]
+            
+        if self.king:
+            if self.space in [28,20,12,4] or self.space in [29,21,13,5]:
+                if opposite == 'w':
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space+9)].getColor()==0:
+                            return [True,self.space+9]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space+7)].getColor()==0:
+                            return [True,self.space+7]
+                else:
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space-9)].getColor()==0:
+                            return [True,self.space-9]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space-7)].getColor()==0:
+                            return [True,self.space-7]
+            else:
+                if opposite == 'w':
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space+7)].getColor()==0:
+                            return [True,self.space+7]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space+9)].getColor()==0:
+                            return [True,self.space+9]
+                else:
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space-7)].getColor()==0:
+                            return [True,self.space-7]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space-9)].getColor()==0:
+                            return [True,self.space-9]
         else:
-            if board[-int(moves[0])].getColor()==opposite:
-                if board[-int(self.space-7)].getColor()==0:
-                    return [True,self.space-7]
-            if board[-int(moves[-1])].getColor()==opposite:
-                if board[-int(self.space-9)].getColor()==0:
-                    return [True,self.space-9]
-    
+            if self.space in [28,20,12,4] or self.space in [29,21,13,5]:
+                if opposite == 'w':
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space+9)].getColor()==0:
+                            return [True,self.space+9]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space+7)].getColor()==0:
+                            return [True,self.space+7]
+                else:
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space-9)].getColor()==0:
+                            return [True,self.space-9]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space-7)].getColor()==0:
+                            return [True,self.space-7]
+            else:
+                if opposite == 'w':
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space+7)].getColor()==0:
+                            return [True,self.space+7]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space+9)].getColor()==0:
+                            return [True,self.space+9]
+                else:
+                    if board[-int(moves[0])].getColor()==opposite:
+                        if board[-int(self.space-7)].getColor()==0:
+                            return [True,self.space-7]
+                    if board[-int(moves[-1])].getColor()==opposite:
+                        if board[-int(self.space-9)].getColor()==0:
+                            return [True,self.space-9]
+        
     def getSpace(self):
         return self.space
     
@@ -107,6 +155,10 @@ class piece():
     
     def changeSpace(self,space):
         self.space=space
+    
+    def checkPromote(self):
+        if self.space in [32,31,30,29] and self.color=="b":
+            self.king=True
         
 class board():
     def __init__(self):
@@ -127,13 +179,16 @@ class board():
             #loop through the elements of the rows
             for j in range(0,len(i)):
                 i[j].setRow(rCount)
+                i[j].checkPromote()
                 #if it is an even row, print a space before each piece
                 if count==0:
                     print(' ',end='')
-                    print(i[j].getColor(),end='')
+                    color =i[j].getColor() if not i[j].king else i[j].getColor().upper()
+                    print(color,end='')
                     #if it is an odd row, print a space after each piece
                 else:
-                    print(i[j].getColor(),end='')
+                    color =i[j].getColor() if not i[j].king else i[j].getColor().upper()
+                    print(color,end='')
                     print(' ',end='')
                     #after each row, print a new line
             print()
@@ -143,41 +198,4 @@ class board():
             else:
                 count-=1
             rCount+=1
-    
-    
-"""if __name__ == '__main__':
-    p=[ piece(x,0) for x in range(0,32)]
-    for x in range(1,13):
-        p[-x]=piece(x,"b")
-    for x in range(21,33):
-        p[-x]=piece(x,"w")
-
-    def drawP(board):
-        #change the board into an array of arrays that represent the rows of the board
-        bb=np.reshape(board,(-1,4))
-        count=0
-        
-        #loop through the rows
-        for i in bb:
-            #loop through the elements of the rows
-            for j in range(0,len(i)):
-            #if it is an even row, print a space before each piece
-                if count==0:
-                    print(' ',end='')
-                    print(i[j].getColor(),end='')
-                    #if it is an odd row, print a space after each piece
-                else:
-                    print(i[j].getColor(),end='')
-                    print(' ',end='')
-                    #after each row, print a new line
-            print()
-        #then change the row to the opposite type(odd or even)
-            if count==0:
-                count+=1
-            else:
-                count-=1
-
-    #print(p[11])
-
-    drawP(p)"""
     
