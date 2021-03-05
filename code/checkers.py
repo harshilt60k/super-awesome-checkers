@@ -26,11 +26,15 @@ def makeMove(board,turn):
     mv=input("Enter move in format(11-15, 11x15 for jump): ")
     if 'x' in mv:
         move=mv.split("x")
-        if board[-int(move[0])].checkJump(board)[0]:
-            return makeJump(board,turn,move)
-        else:
-            print("Invalid jump.")
-            return makeMove(board, turn)
+        try:
+            if board[-int(move[0])].checkJump(board)[0]:
+                return makeJump(board,turn,move)
+            else:
+                print("Invalid jump.")
+                return makeMove(board, turn)
+        except:
+            print("Enter move again")
+            return makeMove(board,turn)
     move=mv.split("-")
     #use to check the movements of players since the table's outlook does not change
     #possiblePositions = possibleMovements(move,board)
@@ -38,27 +42,31 @@ def makeMove(board,turn):
     #print(board[-int(move[0])].posMoves())
     #print(move)
     #if it is player 1's turn, check if the piece is black and the resulting place is empty
-    if turn==0:
-        #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
-        if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
-            board[-int(move[1])]=board[-int(move[0])]
-            board[-int(move[1])].changeSpace(int(move[1]))
-            board[-int(move[0])]=piece(int(move[0]),0)
-            return board
+    try:
+        if turn==0:
+            #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
+            if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
+                board[-int(move[1])]=board[-int(move[0])]
+                board[-int(move[1])].changeSpace(int(move[1]))
+                board[-int(move[0])]=piece(int(move[0]),0)
+                return board
+            else:
+                print("Invalid move.")
+                return makeMove(board,turn)
+        #if it is player 2's turn, check if the piece is white and the resulting place is empty
         else:
-            print("Invalid move.")
-            return makeMove(board,turn)
-    #if it is player 2's turn, check if the piece is white and the resulting place is empty
-    else:
-        #Promote piece to king, "kw" signifies a promoted piece -Ayo
-        if board[-int(move[1])].color==0 and board[-int(move[0])].color=='w' and (int(move[1]) in board[-int(move[0])].posMoves()) :
-            board[-int(move[1])]=board[-int(move[0])]
-            board[-int(move[1])].changeSpace(int(move[1]))
-            board[-int(move[0])]=piece(int(move[0]),0)
-            return board
-        else:
-            print("Invalid move.")
-            return makeMove(board,turn)
+            #Promote piece to king, "kw" signifies a promoted piece -Ayo
+            if board[-int(move[1])].color==0 and board[-int(move[0])].color=='w' and (int(move[1]) in board[-int(move[0])].posMoves()) :
+                board[-int(move[1])]=board[-int(move[0])]
+                board[-int(move[1])].changeSpace(int(move[1]))
+                board[-int(move[0])]=piece(int(move[0]),0)
+                return board
+            else:
+                print("Invalid move.")
+                return makeMove(board,turn)
+    except:
+        print("Enter move again")
+        return makeMove(board,turn)
 
 def makeJump(board, turn, move):
     #take the move as an input
