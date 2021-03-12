@@ -6,6 +6,11 @@ Created on Thu Feb 11 21:14:09 2021
 """
 from  setup import piece, board
 import numpy as np
+
+whiteC=0
+blackC=0
+
+
 '''
 valid moves are index + 3,4,5 if black pieces
                 index +/- 3,4,5 if black kings
@@ -74,6 +79,14 @@ def makeJump(board, turn, move):
     
     #print(move)
     #print(finalLocation)
+    if board[-int(move[1])].color=='w':
+        global whiteC
+        whiteC += 1
+    else:
+        global blackC
+        blackC += 1
+    
+    
     board[-int(finalLocation)]=board[-int(move[0])]
     board[-int(finalLocation)].changeSpace(int(finalLocation))
     board[-int(move[0])]=piece(int(move[0]),0)
@@ -142,7 +155,9 @@ while True:
     print()
     print('-'*10)
     print()
-    
+    if blackC==12 or whiteC==12:
+        print("Game over")
+        break
     #Change the turn to the next player's turn
     if turn==0:
         print("White's turn\n\n")
