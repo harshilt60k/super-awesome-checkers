@@ -125,25 +125,14 @@ def drawP(board):
         rCount+=1
 #Initialize the board with values of 0 for 32 spaces
 p=board()
-"""p=[ piece.piece(x,0) for x in range(0,32)]
-for x in range(1,13):
-    p[-x]=piece.piece(x,"b")
-for x in range(21,33):
-    p[-x]=piece.piece(x,"w")
-"""
-
 #initialize the turn as 0
 turn=0
-
 #start the game loop
 while True:
-
     #Print the board
     p.drawP()
-    
     #ask for a move
     makeMove(p.board,turn)
-
     #Formatting print statements
     print()
     print('-'*10)
