@@ -1,5 +1,6 @@
 import pygame
 import pyautogui
+import math
 from os import path
 pygame.init()
 scrnw = int(1920)
@@ -80,9 +81,9 @@ def pieces(x = 0, y = 0):
 def makeButtons():
     global buttons
     buttons = []
-    buttons.append(button('undo', 0, 8))
-    buttons.append(button('redo', 1, 8))
-    buttons.append(button('settings', 7, 8))
+    buttons.append(button('undo', 9, 7))
+    buttons.append(button('redo', 10, 7))
+    buttons.append(button('settings', 11, 7))
         
 def updatePieces(x = 0, y = 0):
     global size
@@ -103,9 +104,9 @@ def updatePieces(x = 0, y = 0):
         i = i + 1
 def background():
     screen.blit(felt, (0,0))
-    drawboard((scrnw-boardsize)/2,(scrnh-boardsize)/2)
-    screen.blit(frame, (int(((scrnw-boardsize)/2-frame.get_width())/2),0))
-    screen.blit(frame, (int(((scrnw-(scrnw-boardsize)/2)+scrnw)/2-frame.get_width()/2),0))
+    drawboard((scrnw-boardsize)/2.25,(scrnh-boardsize)/2)
+    screen.blit(frame, (int(((scrnw-boardsize)/2-frame.get_width())/10),0))
+    screen.blit(frame, (int(((scrnw-boardsize)/2-frame.get_width())/10),scrnh-frame.get_height()+scrnh/25))
 
 def load():
     global felt
@@ -118,11 +119,13 @@ def load():
     felt = pygame.image.load(r'greenfelt.jpg')
     felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
     frame = pygame.image.load(r'GoldFrameTransparent.png')
-    frame = pygame.transform.smoothscale(frame, (int(scrnh*3/6), int(scrnh*3/6*(116/81))))
+    frame = pygame.transform.smoothscale(frame, (int(scrnh*3/8), int(scrnh*3/8*(116/81))))
     redprsn = pygame.image.load(r'personiconred.png')
     blackprsn = pygame.image.load(r'personicon.png')
+    redrobot = pygame.image.load(r'redrobot.png')
+    blackrobot = pygame.image.load(r'blackrobot.png')
     pointer = pygame.image.load(r'pointer.png')
-    boardsize = int(scrnh*4/5)
+    boardsize = int(scrnh*9/10)
 
 class button():
     def __init__(self, name, xspot, yspot = 8):
@@ -204,7 +207,7 @@ class button():
         self.selected = True
 
     def show(self):
-        length = int(scrnh/10*0.7)
+        length = int(boardsize/8*0.7)
 
         if self.selected:
             if path.exists(r'' + self.name + 'blue.png'):
@@ -227,7 +230,7 @@ class piece():
 
     def __init__(self, x, y, xspot, yspot, color):
         self.pc = pygame.image.load(r'' + color + '.png')
-        self.pc = pygame.transform.smoothscale(self.pc, (int(scrnh/10),int(scrnh/10)))
+        self.pc = pygame.transform.smoothscale(self.pc, (int(boardsize/8),int(boardsize/8)))
         self.x = int(x)
         self.y = int(y)
         self.xspot = xspot
@@ -256,21 +259,21 @@ class piece():
         if not self.eaten:
             self.x = xx + self.xspot*size
         else:
-            inby = int(scrnh/17)
+            inby = int(scrnh/34)
             if self.color == 'red':
-                self.x = (int(((scrnw-boardsize)/2-frame.get_width())/2) + inby) + (int(scrnh*3/6) - inby)/3*(self.timeeaten % 3)
+                self.x = (int(((scrnw-boardsize)/2-frame.get_width())/10) + inby) + (int(scrnh*3/8) - inby*2)/3*(self.timeeaten % 3)
             if self.color == 'black':
-                self.x = (int(((scrnw-(scrnw-boardsize)/2)+scrnw)/2-frame.get_width()/2) + inby) + (int(scrnh*3/6) - inby)/3*(self.timeeaten % 3)
+                self.x = (int(((scrnw-boardsize)/2-frame.get_width())/10) + inby) + (int(scrnh*3/8) - inby*2)/3*(self.timeeaten % 3)
 
     def setY(self):
         if not self.eaten:
             self.y = yy + self.yspot*size
         else:
-            inby = int(scrnh/17)
+            inby = int(scrnh/34)
             if self.color == 'red':
-                self.y = (0 + inby) + (int(scrnh*3/6*(116/81)) - inby*2)/4*int(self.timeeaten / 3)
+                self.y = (0 + inby) + (int(scrnh*3/8*(116/81)) - inby*4)/4*int(self.timeeaten / 3)
             if self.color == 'black':
-                self.y = (0 + inby) + (int(scrnh*3/6*(116/81)) - inby*2)/4*int(self.timeeaten / 3)
+                self.y = (scrnh-frame.get_height()+scrnh/25 + inby) + (int(scrnh*3/8*(116/81)) - inby*4)/4*int(self.timeeaten / 3)
 
     def getSelect(self):
         return self.selected
@@ -303,9 +306,9 @@ class piece():
         i = 0
         while True:
             screen.blit(board, (xx, yy))
-            pygame.display.update()
             xf = xf + x/speed
             yf = yf + y/speed
+            pygame.time.wait(2)
             self.pc = pygame.image.load(r'' + self.color + 'king'*self.king + '.png')
             self.pc = pygame.transform.smoothscale(self.pc, (int(scrnh/10+(-abs(i-speed/2)+speed/2)*grow*chngsize),int(scrnh/10+(-abs(i-speed/2)+speed/2)*grow*chngsize)))
             screen.blit(self.pc, (oldx + xf - (-abs(i-speed/2)+speed/2)*grow*chngsize/2, oldy + yf - (-abs(i-speed/2)+speed/2)*grow*chngsize/2))
@@ -321,12 +324,13 @@ class piece():
         self.selected = not self.selected
 
     def show(self):
-        self.pc = pygame.transform.smoothscale(self.pc, (int(scrnh/10),int(scrnh/10)))
+        self.pc = pygame.transform.smoothscale(self.pc, (int(boardsize/8),int(boardsize/8)))
         screen.blit(self.pc, (self.x,self.y))
         if self.selected:
             pygame.draw.circle(screen, white, (int((self.x+(self.x+int(boardsize/8)))/2),int((self.y+(self.y+int(boardsize/8)))/2)), int(boardsize/8*0.4), int(scrnh/250))
     def valid(self, x, y):
         global turn
+        global moved
         if self.color == 'red':
             if turn % 2 == 0:
                 return False
@@ -359,18 +363,24 @@ class piece():
                 self.makeKing()
             turn = turn + 1
             self.motion(oldx, oldy, False)
+        moved = True
         return boolean
 
     def jumpValid(self, x, y):
         global turn
+        global moved
         minusturn = False
         if self.color == 'red':
             if turn % 2 == 0:
                 minusturn = True
+                if moved:
+                    return False
             fix = -1
         if self.color == 'black':
             if turn % 2 == 1:
                 minusturn = True
+                if moved:
+                    return False
             fix = 1
         xset = int((self.x-xx)/size)*size
         yset = int((self.y-yy)/size)*size
@@ -418,7 +428,69 @@ class piece():
             self.motion(oldx, oldy, True)
             if minusturn:
                 turn = turn - 1
+        moved = False
         return boolean
+
+def firstload():
+    global robot
+    global felt
+    global play
+    global playpress
+    robot = pygame.image.load(r'robot.png')
+    robot = pygame.transform.smoothscale(robot, (int(robot.get_width()*scrnh/1000),int(robot.get_height()*scrnh/1000)))
+    robot = pygame.transform.flip(robot, True, False)
+    felt = pygame.image.load(r'greenfelt.jpg')
+    felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
+    play = pygame.image.load(r'play.png')
+    play = pygame.transform.smoothscale(play, (int(play.get_width()*scrnh/3000), int(play.get_height()*scrnh/3000)))
+    playpress = pygame.image.load(r'playpress.png')
+    playpress = pygame.transform.smoothscale(playpress, (int(playpress.get_width()*scrnh/3000), int(playpress.get_height()*scrnh/3000)))
+    rules = pygame.image.load(r'rules.png')
+    rules = pygame.transform.smoothscale(rules, (int(rules.get_width()*scrnh/3000), int(rules.get_height()*scrnh/3000)))
+    rulespress = pygame.image.load(r'rulespress.png')
+    rulespress = pygame.transform.smoothscale(rulespress, (int(rulespress.get_width()*scrnh/3000), int(rulespress.get_height()*scrnh/3000)))
+    
+def firstbackground(hover, pressplay):
+    screen.blit(felt, (0,0))
+    screen.blit(robot, ((scrnw/20,int(scrnh/2-robot.get_height()/2)+hover)))
+    if not pressplay:
+        showplay = play
+    if pressplay:
+        showplay = playpress
+    screen.blit(showplay, (int(scrnw/2 - play.get_width()/2),int(scrnh*7/10)))
+
+move = 0
+hmv = 250
+updown = False
+firstload()
+pressplay = False
+stop = False
+while not stop:
+    hover = 100*math.sin(move/hmv*12)
+    wh = pygame.display.get_window_size()
+    scrnw = int(wh[0])
+    scrnh = int(wh[0]*9/16)
+    screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
+    xplay = scrnw/2 - play.get_width()/2
+    yplay = scrnh*7/10          
+    firstload()
+
+    for event in pygame.event.get():
+        mouse = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+            if int(scrnw/2 - play.get_width()/2) <= mouse[0] <= int(scrnw/2 - play.get_width()/2) + play.get_width() and int(scrnh*7/10) <= mouse[1] <= int(scrnh*7/10) + play.get_height():
+                pressplay = True
+        if event.type == pygame.MOUSEBUTTONUP and (int(scrnw/2 - play.get_width()/2) <= mouse[0] <= int(scrnw/2 - play.get_width()/2) + play.get_width() and int(scrnh*7/10) <= mouse[1] <= int(scrnh*7/10) + play.get_height()):
+            stop = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            pressplay = False
+    firstbackground(hover, pressplay)
+    pygame.display.update()
+    move = move + 1
+
+
+    
 
 wh = pygame.display.get_window_size()
 tempscrnw = int(wh[0])
@@ -430,9 +502,11 @@ choice = None
 global xx
 global yy
 global turn
+global moved
+moved = False
 turn = 0
 while True:
-    xx = (scrnw-boardsize)/2
+    xx = (scrnw-boardsize)/2.25
     yy = (scrnh-boardsize)/2
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
