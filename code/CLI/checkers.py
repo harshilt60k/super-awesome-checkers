@@ -151,6 +151,8 @@ while True:
     if turn==0:
         print("White's turn\n\n")
         turn=1
+        print(p.piecesleft())
     else:
         print("Black's turn\n\n")
         turn=0
+        print(p.piecesleft())
