@@ -136,6 +136,10 @@ class piece():
     
     def changeSpace(self,space):
         self.space=space
+    def isKing(self):
+        if self.king==True:
+            return True
+        return False
     
     def checkPromote(self):
         if self.space in [32,31,30,29] and self.color=="b":
@@ -179,4 +183,36 @@ class board():
             else:
                 count-=1
             rCount+=1
+#In order to count the number of pieces on the board at the current time in the game
+    def piecesleft(self):
+        self.blacks=0
+        self.whites=0
+        self.whiteK=0
+        self.blackK=0
+        for i in self.board:
+            if i.color=="b":
+                self.blacks+=1
+            elif i.color=="w":
+                self.whites+=1
+            if  i.isKing==True and i.color=="w":
+                self.whiteK+=1
+            elif  i.isKing==True and i.color=="b":
+                self.blackK+=1
+#get all the pieces based on the color
+    def getAllPieces(self, color):
+        pieces=[]
+        for piece in self.board:
+            if piece!=0 and piece.color==color:
+                pieces.append(piece)
+        return pieces
+#check winner
+    def checkWinner(self):
+        if self.blacks<=0:
+            return "white"
+        elif self.whites<=0:
+            return "black"
+        return None
     
+# test from youtube video  
+    def evaluate(self):
+        return self.whites - self.blacks + (self.whiteK * 0.5 - self.blackK * 0.5)
