@@ -10,6 +10,7 @@ import numpy as np
 whiteC=0
 blackC=0
 
+#Hello world
 
 '''
 valid moves are index + 3,4,5 if black pieces
