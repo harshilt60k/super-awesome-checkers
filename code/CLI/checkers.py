@@ -4,9 +4,9 @@ Created on Thu Feb 11 21:14:09 2021
 
 @author: Jake
 """
-from  setup import piece, board
+from setup import piece, board
+from algorithm import minimax
 import numpy as np
-
 whiteC=0
 blackC=0
 
@@ -49,12 +49,13 @@ def makeMove(board,turn):
     #print(move)
     #if it is player 1's turn, check if the piece is black and the resulting place is empty
     try:
-        if turn==0:
+        if turn==1:
             #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
             if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
                 board[-int(move[1])]=board[-int(move[0])]
                 board[-int(move[1])].changeSpace(int(move[1]))
                 board[-int(move[0])]=piece(int(move[0]),0)
+                print(f"This is current space: { board[-int(move[1])].space }")
                 return board
             else:
                 print("Invalid move.")
@@ -92,48 +93,28 @@ def makeJump(board, turn, move):
     board[-int(finalLocation)].changeSpace(int(finalLocation))
     board[-int(move[0])]=piece(int(move[0]),0)
     board[-int(move[1])]=piece(int(move[0]),0)
-    return board
+    return board       
         
-        
-    
-        
-        
-def drawP(board):
-    #change the board into an array of arrays that represent the rows of the board
-    bb=np.reshape(board,(-1,4))
-    count=0
-    rCount=0    
-    #loop through the rows
-    for i in bb:
-        #loop through the elements of the rows
-        for j in range(0,len(i)):
-            i[j].setRow(rCount)
-            #if it is an even row, print a space before each piece
-            if count==0:
-                print(' ',end='')
-                print(i[j].getColor(),end='')
-                #if it is an odd row, print a space after each piece
-            else:
-                print(i[j].getColor(),end='')
-                print(' ',end='')
-                #after each row, print a new line
-        print()
-    #then change the row to the opposite type(odd or even)
-        if count==0:
-            count+=1
-        else:
-            count-=1
-        rCount+=1
 #Initialize the board with values of 0 for 32 spaces
 p=board()
 #initialize the turn as 0
+# 0 is for white and 1 is for black
 turn=0
+
 #start the game loop
+AIorPerson=input("Do you wanna play with the AI(Input 1) or Another person(Input 2)? ")
+print("White's turn\n\n")
 while True:
     #Print the board
+    
     p.drawP()
     #ask for a move
-    makeMove(p.board,turn)
+    if turn==0 and AIorPerson!="1":
+        makeMove(p.board,turn)
+    elif turn==1:
+        makeMove(p.board,turn)
+    else:
+        pass
     #Formatting print statements
     print()
     print('-'*10)
@@ -145,15 +126,19 @@ while True:
     print()
     print('-'*10)
     print()
-    if blackC==12 or whiteC==12:
-        print("Game over")
+    if p.checkWinner()!=None:
+        print(f"{ p.checkWinner() } Wins!")
         break
     #Change the turn to the next player's turn
-    if turn==0:
-        print("White's turn\n\n")
+    if turn==0 and AIorPerson=="1":
+        value,new_board= minimax(p,2,"w")
+        p=new_board
         turn=1
-        print(p.piecesleft())
-    else:
         print("Black's turn\n\n")
+    elif turn==0 and AIorPerson!="1":
+        
+        turn=1
+        print("Black's turn\n\n")
+    else:
         turn=0
-        print(p.piecesleft())
+        print("White's turn\n\n")

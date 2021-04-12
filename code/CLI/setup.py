@@ -9,6 +9,7 @@ class piece():
         self.space=space
         self.king=False
         self.color=color
+        self.OppositePos= None
         
     def setRow(self,row):
         self.row=row
@@ -21,7 +22,7 @@ class piece():
                     return [self.space+4]
                 else:
                     return [self.space+3,self.space+4]
-            elif self.king:
+            elif self.king and self.color=='b':
                 if(self.space in [28,20,12,4,29,21,13,5]):
                     return [self.space+4,self.space-4]
                 else:
@@ -31,7 +32,7 @@ class piece():
                     return [self.space-4]
                 else:
                     return [self.space-4,self.space-5]
-            elif self.king:
+            elif self.king and self.color=='w':
                 if(self.space in [28,20,12,4,29,21,13,5]):
                     return [self.space+4,self.space-4]
                 else:
@@ -69,73 +70,91 @@ class piece():
             if self.space in [28,20,12,4] or self.space in [29,21,13,5]:
                 if opposite == 'w':
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space-9)].getColor()==0:
                             return [True,self.space-9]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space-7)].getColor()==0:
                             return [True,self.space-7]
             else:
                 if opposite == 'w':
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space-7)].getColor()==0:
                             return [True,self.space-7]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space-9)].getColor()==0:
                             return [True,self.space-9]
         else:
             if self.space in [28,20,12,4] or self.space in [29,21,13,5]:
                 if opposite == 'w':
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space-9)].getColor()==0:
                             return [True,self.space-9]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space-7)].getColor()==0:
                             return [True,self.space-7]
             else:
                 if opposite == 'w':
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space-7)].getColor()==0:
                             return [True,self.space-7]
                     if board[-int(moves[-1])].getColor()==opposite:
+                        self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space-9)].getColor()==0:
                             return [True,self.space-9]
         
     def getSpace(self):
         return self.space
-    
+    def getOppositePos(self):
+        return self.OppositePos
     def getColor(self):
         return self.color
     
     def changeSpace(self,space):
         self.space=space
+
     def isKing(self):
         if self.king==True:
             return True
@@ -144,10 +163,14 @@ class piece():
     def checkPromote(self):
         if self.space in [32,31,30,29] and self.color=="b":
             self.king=True
+        elif self.space in [4,3,2,1] and self.color=="w":
+            self.king=True
         
 class board():
     def __init__(self):
         self.board=[ piece(x,0) for x in range(0,32)]
+        self.blacks=12
+        self.whites=12
         for x in range(1,13):
             self.board[-x]=piece(x,"b")
         for x in range(21,33):
@@ -198,6 +221,7 @@ class board():
                 self.whiteK+=1
             elif  i.isKing==True and i.color=="b":
                 self.blackK+=1
+        return [self.blacks,self.whites,self.whiteK,self.blackK]
 #get all the pieces based on the color
     def getAllPieces(self, color):
         pieces=[]
@@ -208,11 +232,12 @@ class board():
 #check winner
     def checkWinner(self):
         if self.blacks<=0:
-            return "white"
+            return "White"
         elif self.whites<=0:
-            return "black"
+            return "Black"
         return None
     
 # test from youtube video  
     def evaluate(self):
+        self.piecesleft()
         return self.whites - self.blacks + (self.whiteK * 0.5 - self.blackK * 0.5)
