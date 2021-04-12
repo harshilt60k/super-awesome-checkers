@@ -8,9 +8,10 @@ def AImove(board,start,stop, isJump=False,opposite=None):
         board[-int(start)]=piece(int(start),0)
         board[-int(opposite)]=piece(int(start),0)
         return board
-    board[-int(stop)]=board[-int(start)]
-    board[-int(stop)].changeSpace(int(stop))
-    board[-int(start)]=piece(int(start),0)
+    if board[-int(stop)].color==0:
+        board[-int(stop)]=board[-int(start)]
+        board[-int(stop)].changeSpace(int(stop))
+        board[-int(start)]=piece(int(start),0)
     
     return board
     
@@ -31,10 +32,10 @@ def minimax(position,depth,max_player):
         best_move=None
         for move in get_all_moves(position,"b"):
             evaluation=minimax(move,depth-1,True)[0]
-            maxEval=min(minEval,evaluation)
-            if maxEval==evaluation:
+            minEval=min(minEval,evaluation)
+            if minEval==evaluation:
                 best_move=move
-        return maxEval,best_move
+        return minEval,best_move
         
 
 def simulate_move(piece,move,board,isJump=False,opposite=None):
@@ -46,19 +47,19 @@ def simulate_move(piece,move,board,isJump=False,opposite=None):
     
 def get_all_moves(board,color):
     moves=[]
-    
     for piece in board.getAllPieces(color):
         valid_moves= piece.posMoves()
-        jumps=""
+        jumps=None
         if type(piece.checkJump(board.board))!=type(None):
             jumps=piece.checkJump(board.board)[1]
             valid_moves.append(jumps)
             oppositePos=piece.getOppositePos()
         for move in range(len(valid_moves)):
             temp_board=deepcopy(board)
-            if jumps=="":
+            if jumps==None:
                 new_board=simulate_move(piece,valid_moves[move], temp_board)
-            elif jumps!="":
+            elif jumps!=None:
                 new_board=simulate_move(piece,valid_moves[move], temp_board,isJump=True,opposite=oppositePos)
             moves.append(new_board)
+        
     return moves

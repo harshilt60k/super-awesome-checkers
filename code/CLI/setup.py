@@ -212,14 +212,14 @@ class board():
         self.whites=0
         self.whiteK=0
         self.blackK=0
-        for i in self.board:
-            if i.color=="b":
+        for piece in self.board:
+            if piece.color=="b":
                 self.blacks+=1
-            elif i.color=="w":
+            elif piece.color=="w":
                 self.whites+=1
-            if  i.isKing==True and i.color=="w":
+            if  piece.isKing==True and piece.color=="w":
                 self.whiteK+=1
-            elif  i.isKing==True and i.color=="b":
+            elif  piece.isKing==True and piece.color=="b":
                 self.blackK+=1
         return [self.blacks,self.whites,self.whiteK,self.blackK]
 #get all the pieces based on the color
