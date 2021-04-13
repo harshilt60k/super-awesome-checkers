@@ -8,7 +8,7 @@ from copy import deepcopy
 from setup import piece, board
 #This is to evaluate moves from the minimax AI and test out those moves sfrom the Simulate move function 
 def AImove(board,start,stop, isJump=False,opposite=None):
-    if isJump:
+    if isJump and board[-int(stop)].color==0:
         board[-int(stop)]=board[-int(start)]
         board[-int(stop)].changeSpace(int(stop))
         board[-int(start)]=piece(int(start),0)
@@ -18,7 +18,8 @@ def AImove(board,start,stop, isJump=False,opposite=None):
         board[-int(stop)]=board[-int(start)]
         board[-int(stop)].changeSpace(int(stop))
         board[-int(start)]=piece(int(start),0)
-    
+    else: 
+        return 0
     return board
     
 def minimax(position,depth,max_player):
@@ -42,6 +43,7 @@ def minimax(position,depth,max_player):
         for move in get_all_moves(position,"b"):
             evaluation=minimax(move,depth-1,True)[0]
             minEval=min(minEval,evaluation)
+            #print(minEval)
             if minEval==evaluation:
                 best_move=move
         return minEval,best_move
@@ -51,6 +53,8 @@ def simulate_move(piece,move,board,isJump=False,opposite=None):
     if isJump:
         AImove(board.board,piece.space,move,isJump=True,opposite=opposite)
         return board
+    if AImove(board.board,piece.space,move)==0:
+        return 0
     AImove(board.board,piece.space,move)
     return board
     
@@ -68,11 +72,17 @@ def get_all_moves(board,color):
             oppositePos=piece.getOppositePos()
         #checks and simulates each move in the valid_moves list by crating an exact copy of the original board and then recursively applying the moves for the different pieces and testing the feasibility and then appending that possibility to a new list
         for move in range(len(valid_moves)):
+            #print(piece.getSpace(),piece.getColor())
             temp_board=deepcopy(board)
+            temp_piece=deepcopy(piece)
             if jumps==None:
-                new_board=simulate_move(piece,valid_moves[move], temp_board)
+                new_board=simulate_move(temp_piece,valid_moves[move], temp_board)
             elif jumps!=None:
-                new_board=simulate_move(piece,valid_moves[move], temp_board,isJump=True,opposite=oppositePos)
-            moves.append(new_board)
-        
+                new_board=simulate_move(temp_piece,valid_moves[move], temp_board,isJump=True,opposite=oppositePos)
+            
+            if new_board==0:
+                    pass
+            else:
+                moves.append(new_board)
+
     return moves

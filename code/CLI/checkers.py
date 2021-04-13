@@ -49,7 +49,7 @@ def makeMove(board,turn):
     #print(move)
     #if it is player 1's turn, check if the piece is black and the resulting place is empty
     try:
-        if turn==1:
+        if turn==0:
             #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
             if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
                 board[-int(move[1])]=board[-int(move[0])]
@@ -103,15 +103,15 @@ turn=0
 
 #start the game loop
 AIorPerson=input("Do you wanna play with the AI(Input 1) or Another person(Input 2)? ")
-print("White's turn\n\n")
+print("Black's turn\n\n")
 while True:
     #Print the board
     
     p.drawP()
     #ask for a move
-    if turn==0 and AIorPerson!="1":
+    if turn==1 and AIorPerson!="1":
         makeMove(p.board,turn)
-    elif turn==1:
+    elif turn==0:
         makeMove(p.board,turn)
     else:
         pass
@@ -130,15 +130,15 @@ while True:
         print(f"{ p.checkWinner() } Wins!")
         break
     #Change the turn to the next player's turn
-    if turn==0 and AIorPerson=="1":
-        value,new_board= minimax(p,2,"w")
+    if turn==1 and AIorPerson=="1":
+        value,new_board= minimax(p,3,"w")
         p=new_board
-        turn=1
+        turn=0
         print("Black's turn\n\n")
-    elif turn==0 and AIorPerson!="1":
+    elif turn==1 and AIorPerson!="1":
         
-        turn=1
+        turn=0
         print("Black's turn\n\n")
     else:
-        turn=0
+        turn=1
         print("White's turn\n\n")
