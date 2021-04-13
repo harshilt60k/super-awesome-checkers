@@ -2,13 +2,15 @@ import pygame
 import pyautogui
 import math
 from os import path
+from TypeEngine import typer
+#add open move choices
 pygame.init()
 scrnw = int(1920)
 scrnh = int(1080)
 screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
-black = (0,0,0)
+colorblack = (0,0,0)
 white = (255,255,255)
-red = (255,0,0)
+colorred = (255,0,0)
 yellow = (255,255,0)
 blue = (0,0,255)
 apricot = (247,187,147)
@@ -20,7 +22,7 @@ def drawboard(x = 0, y = 0):
     ay = 0
     size = int(boardsize/8)
     while True:
-        pygame.draw.rect(screen, red, (int(x+ax),int(y+ay),int(size),int(size)), 0)
+        pygame.draw.rect(screen, colorred, (int(x+ax),int(y+ay),int(size),int(size)), 0)
         ax = ax + size*2
         if ax == size*8:
             ax = size
@@ -33,7 +35,7 @@ def drawboard(x = 0, y = 0):
     bx = size
     by = 0
     while True:
-        pygame.draw.rect(screen, black, (int(x+bx),int(y+by),int(size),int(size)), 0)
+        pygame.draw.rect(screen, colorblack, (int(x+bx),int(y+by),int(size),int(size)), 0)
         bx = bx + size*2
         if bx == size*8:
             bx = size
@@ -84,7 +86,8 @@ def makeButtons():
     buttons.append(button('undo', 9, 7))
     buttons.append(button('redo', 10, 7))
     buttons.append(button('settings', 11, 7))
-        
+    buttons.append(button('save', 11, 0))
+
 def updatePieces(x = 0, y = 0):
     global size
     size = int(boardsize/8)
@@ -96,7 +99,7 @@ def updatePieces(x = 0, y = 0):
         pc.show()
         i = i + 1
     i = 0
-    while i < 3:
+    while i < len(buttons):
         pc = buttons[i]
         pc.setX()
         pc.setY()
@@ -143,13 +146,15 @@ class button():
             pass
         if self.name == 'redo':
             pass
+        if self.name == 'save':
+            save()
         if self.name == 'settings':
             while True:
                 wh = pygame.display.get_window_size()
                 scrnw = int(wh[0])
                 scrnh = int(wh[0]*9/16)
                 screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
-                xx = (scrnw-boardsize)/2
+                xx = (scrnw-boardsize)/2.25
                 yy = (scrnh-boardsize)/2
                 load()
                 background()
@@ -339,7 +344,7 @@ class piece():
             if turn % 2 == 1:
                 return False
             fix = 1
-        xset = int((self.x-xx)/size)*size
+        xset = int((self.x-xx+0.25)/size)*size
         yset = int((self.y-yy)/size)*size
         oldx = self.x
         oldy = self.y
@@ -382,7 +387,7 @@ class piece():
                 if moved:
                     return False
             fix = 1
-        xset = int((self.x-xx)/size)*size
+        xset = int((self.x-xx+0.25)/size)*size
         yset = int((self.y-yy)/size)*size
         oldx = self.x
         oldy = self.y
@@ -410,7 +415,6 @@ class piece():
                 eatboolean = True
                 break
         if not eatboolean:
-            print(self.x, self.y, self.xspot, self.yspot)
             self.x = oldx
             self.y = oldy
             self.xspot = oldxspot
@@ -430,12 +434,27 @@ class piece():
                 turn = turn - 1
         moved = False
         return boolean
+def save():
+    while True:
+        mod = pygame.key.get_mods()
+        character = typer(mod)
+        for event in pygame.event.get():
+            print(character)
 
 def firstload():
     global robot
     global felt
     global play
     global playpress
+    global rules
+    global rulespress
+    global black
+    global blackking
+    global red
+    global redking
+    global pclist
+    global piecesize
+    global folder
     robot = pygame.image.load(r'robot.png')
     robot = pygame.transform.smoothscale(robot, (int(robot.get_width()*scrnh/1000),int(robot.get_height()*scrnh/1000)))
     robot = pygame.transform.flip(robot, True, False)
@@ -446,46 +465,213 @@ def firstload():
     playpress = pygame.image.load(r'playpress.png')
     playpress = pygame.transform.smoothscale(playpress, (int(playpress.get_width()*scrnh/3000), int(playpress.get_height()*scrnh/3000)))
     rules = pygame.image.load(r'rules.png')
-    rules = pygame.transform.smoothscale(rules, (int(rules.get_width()*scrnh/3000), int(rules.get_height()*scrnh/3000)))
+    rules = pygame.transform.smoothscale(rules, (int(rules.get_width()*scrnh/4800), int(rules.get_height()*scrnh/4800)))
     rulespress = pygame.image.load(r'rulespress.png')
-    rulespress = pygame.transform.smoothscale(rulespress, (int(rulespress.get_width()*scrnh/3000), int(rulespress.get_height()*scrnh/3000)))
-    
-def firstbackground(hover, pressplay):
+    rulespress = pygame.transform.smoothscale(rulespress, (int(rulespress.get_width()*scrnh/4800), int(rulespress.get_height()*scrnh/4800)))
+    black = pygame.image.load(r'black.png')
+    piecesize = int(black.get_width()*scrnh/1000)
+    black = pygame.transform.smoothscale(black, (piecesize, piecesize))
+    blackking = pygame.image.load(r'blackking.png')
+    blackking = pygame.transform.smoothscale(blackking, (piecesize, piecesize))
+    red = pygame.image.load(r'red.png')
+    red = pygame.transform.smoothscale(red, (piecesize, piecesize))
+    redking = pygame.image.load(r'redking.png')
+    redking = pygame.transform.smoothscale(redking, (piecesize, piecesize))
+    pclist = [black, blackking, red, redking]
+    folder = pygame.image.load(r'open.png')
+    folder = pygame.transform.smoothscale(folder, (int(scrnh/10), int(scrnh/10)))
+
+def firstbackground(hover, spin, pressplay, pressrules, chngrobot):
+    global chngpc
+    global prevspin
+    global n
+    global m
+    global pos
+    global posaccel
+    global dobreak
+    global count
+    global move
     screen.blit(felt, (0,0))
-    screen.blit(robot, ((scrnw/20,int(scrnh/2-robot.get_height()/2)+hover)))
+    afont = pygame.font.SysFont('microsoftyaheimicrosoftyaheiui', int(scrnh/10))
+    text = afont.render('Smart Checkers', True, (0, 0, 0))
+    screen.blit(text, (scrnw/2-text.get_width()/2, scrnh/100))
+    if prevspin < spin and prevspin > 0 and spin < 0.1:
+        chngpc += 1
+    pclist[chngpc%4] = pygame.transform.smoothscale(pclist[chngpc%4], (int(piecesize*spin), int(piecesize)))
+    screen.blit(pclist[chngpc%4], (int(scrnw/2-piecesize*spin/2),int(scrnh/4)))
     if not pressplay:
         showplay = play
     if pressplay:
         showplay = playpress
     screen.blit(showplay, (int(scrnw/2 - play.get_width()/2),int(scrnh*7/10)))
+    if not pressrules:
+        showrules = rules
+    if pressrules:
+        showrules = rulespress
+    screen.blit(showrules, (int(scrnw/2 - rules.get_width()/2),int(scrnh*8.6/10)))
+    prevspin = spin
+    screen.blit(folder, (int(scrnw-scrnh/60-folder.get_width()), int(scrnh-scrnh/60-folder.get_height())))
+    size = robot.get_width()
+    if chngrobot:
+        fromx1 = hover*0 +pos*(1*math.cos(0.36*(move+(-125)*0.0174532925)))+scrnw/2
+        fromy1 = hover*0 +pos*(1*math.sin(0.36*(move+(-125)*0.0174532925)))+scrnh/2
+        screen.blit(robot, (int(fromx1)-size/2+(size-int(size*5/4))/2,int(fromy1)-size/2+(size-int(size*5/4))/2))
+        pygame.display.update()
+        move = move + 0.01 + n
+        if dobreak == True:
+            return True
+        if pos <= 0:
+            pos = 0
+            dobreak = True
+        else:
+            pos = pos - 1 - posaccel
+        posaccel = posaccel + 2
+        n = n + m + 0.01
+        m = m + 0.005
+    else:
+        screen.blit(robot, ((scrnw/20,int(scrnh/2-robot.get_height()/2)+hover)))
+    return False
 
+def showrules():
+    presshome = False
+    while True:
+        wh = pygame.display.get_window_size()
+        scrnw = int(wh[0])
+        scrnh = int(wh[0]*9/16)
+        screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
+        felt = pygame.image.load(r'greenfelt.jpg')
+        felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
+        screen.blit(felt, (0,0))
+        wrules = pygame.image.load(r'writtenrules.png')
+        wrules = pygame.transform.smoothscale(wrules, (scrnw, int(scrnw*47.68/97.64)))
+        screen.blit(wrules, (0, 0))
+        home = pygame.image.load(r'home.png')
+        home = pygame.transform.smoothscale(home, (int(scrnh/10), int(scrnh/10)))
+        screen.blit(home, (int(scrnw-scrnh/60-home.get_width()), int(scrnh-scrnh/60-home.get_height())))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.WINDOWEVENT_MINIMIZED:
+                scrnw = tempscrnw
+                scrnh = tempscrnh
+            elif event.type == pygame.WINDOWEVENT_MAXIMIZED:
+                tempscrnw = scrnw
+                tempscrnh = scrnh
+                root.state('zoomed')
+            mouse = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if int(scrnw-scrnh/60-home.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-home.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+                    presshome = True
+            elif event.type == pygame.MOUSEBUTTONUP and int(scrnw-scrnh/60-home.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-home.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+                if presshome:
+                    return
+            elif event.type == pygame.MOUSEBUTTONUP:
+                presshome = False
+
+def showfolder():
+    presshome = False
+    while True:
+        wh = pygame.display.get_window_size()
+        scrnw = int(wh[0])
+        scrnh = int(wh[0]*9/16)
+        screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
+        felt = pygame.image.load(r'greenfelt.jpg')
+        felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
+        screen.blit(felt, (0,0))
+        
+        home = pygame.image.load(r'home.png')
+        home = pygame.transform.smoothscale(home, (int(scrnh/10), int(scrnh/10)))
+        screen.blit(home, (int(scrnw-scrnh/60-home.get_width()), int(scrnh-scrnh/60-home.get_height())))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.WINDOWEVENT_MINIMIZED:
+                scrnw = tempscrnw
+                scrnh = tempscrnh
+            elif event.type == pygame.WINDOWEVENT_MAXIMIZED:
+                tempscrnw = scrnw
+                tempscrnh = scrnh
+                root.state('zoomed')
+            mouse = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if int(scrnw-scrnh/60-home.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-home.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+                    presshome = True
+            elif event.type == pygame.MOUSEBUTTONUP and int(scrnw-scrnh/60-home.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-home.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+                if presshome:
+                    return
+            elif event.type == pygame.MOUSEBUTTONUP:
+                presshome = False
 move = 0
 hmv = 250
 updown = False
+global chngpc
 firstload()
 pressplay = False
+pressrules = False
+pressfolder = False
 stop = False
+chngpc = 0
+global prevspin
+chngrobot = False
+prevspin = 0
+##global n
+##global m
+##global pos
+##global posaccel
+##global dobreak
+##global count
+n = 0
+m = 0
+posaccel = 0
+dobreak = False
+count = 0
+move = 0
 while not stop:
-    hover = 100*math.sin(move/hmv*12)
+    if not chngrobot:
+        pos = scrnw/3
+    hover = 100*math.sin(move/hmv*math.pi*7)
     wh = pygame.display.get_window_size()
     scrnw = int(wh[0])
     scrnh = int(wh[0]*9/16)
-    screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
-    xplay = scrnw/2 - play.get_width()/2
-    yplay = scrnh*7/10          
+    screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)          
     firstload()
-
+    spin = math.sin(move/hmv*math.pi*7)**2
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        elif event.type == pygame.WINDOWEVENT_MINIMIZED:
+            scrnw = tempscrnw
+            scrnh = tempscrnh
+        elif event.type == pygame.WINDOWEVENT_MAXIMIZED:
+            tempscrnw = scrnw
+            tempscrnh = scrnh
+            root.state('zoomed')
         mouse = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse = pygame.mouse.get_pos()
             if int(scrnw/2 - play.get_width()/2) <= mouse[0] <= int(scrnw/2 - play.get_width()/2) + play.get_width() and int(scrnh*7/10) <= mouse[1] <= int(scrnh*7/10) + play.get_height():
                 pressplay = True
+            if int(scrnw/2 - rules.get_width()/2) <= mouse[0] <= int(scrnw/2 - rules.get_width()/2) + rules.get_width() and int(scrnh*8.6/10) <= mouse[1] <= int(scrnh*8.6/10) + rules.get_height():
+                pressrules = True
+            if int(scrnw-scrnh/60-folder.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-folder.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+                pressfolder = True
         if event.type == pygame.MOUSEBUTTONUP and (int(scrnw/2 - play.get_width()/2) <= mouse[0] <= int(scrnw/2 - play.get_width()/2) + play.get_width() and int(scrnh*7/10) <= mouse[1] <= int(scrnh*7/10) + play.get_height()):
-            stop = True
+            chngrobot = True
+            pressrules = False
+        elif event.type == pygame.MOUSEBUTTONUP and int(scrnw/2 - rules.get_width()/2) <= mouse[0] <= int(scrnw/2 - rules.get_width()/2) + rules.get_width() and int(scrnh*8.6/10) <= mouse[1] <= int(scrnh*8.6/10) + rules.get_height():
+            pressrules = False
+            showrules()
+        elif event.type == pygame.MOUSEBUTTONUP and int(scrnw-scrnh/60-folder.get_width()) <= mouse[0] <= int(scrnw-scrnh/60) and int(scrnh-scrnh/60-folder.get_height()) <= mouse[1] <= int(scrnh-scrnh/60):
+            showfolder()
         elif event.type == pygame.MOUSEBUTTONUP:
             pressplay = False
-    firstbackground(hover, pressplay)
+            pressrules = False
+            pressfolder = False
+    stop = firstbackground(hover, spin, pressplay, pressrules, chngrobot)
     pygame.display.update()
     move = move + 1
 
