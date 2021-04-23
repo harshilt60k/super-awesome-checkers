@@ -131,7 +131,7 @@ while True:
         break
     #Change the turn to the next player's turn
     if turn==1 and AIorPerson=="1":
-        value,new_board= minimax(p,3,"w")
+        value,new_board= minimax(p,2,"w")
         p=new_board
         turn=0
         print("Black's turn\n\n")

@@ -92,14 +92,14 @@ class piece():
                         self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
-                    if board[-int(moves[-1])].getColor()==opposite:
+                    if board[-int(moves[-1])].getColor()==opposite and self.space not in [8,16,24,32,1,9,17,25]:
                         self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
                         self.OppositePos=board[-int(moves[0])].space
-                        if board[-int(self.space-7)].getColor()==0:
+                        if board[-int(self.space-7)].getColor()==0 and self.space not in [8,16,24,32,1,9,17,25]:
                             return [True,self.space-7]
                     if board[-int(moves[-1])].getColor()==opposite:
                         self.OppositePos=board[-int(moves[-1])].space
@@ -121,7 +121,7 @@ class piece():
                         self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space-9)].getColor()==0:
                             return [True,self.space-9]
-                    if board[-int(moves[-1])].getColor()==opposite:
+                    if board[-int(moves[-1])].getColor()==opposite :
                         self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space-7)].getColor()==0:
                             return [True,self.space-7]
@@ -131,14 +131,14 @@ class piece():
                         self.OppositePos=board[-int(moves[0])].space
                         if board[-int(self.space+7)].getColor()==0:
                             return [True,self.space+7]
-                    if board[-int(moves[-1])].getColor()==opposite:
+                    if board[-int(moves[-1])].getColor()==opposite and self.space not in [8,16,24,32,1,9,17,25]:
                         self.OppositePos=board[-int(moves[-1])].space
                         if board[-int(self.space+9)].getColor()==0:
                             return [True,self.space+9]
                 else:
                     if board[-int(moves[0])].getColor()==opposite:
                         self.OppositePos=board[-int(moves[0])].space
-                        if board[-int(self.space-7)].getColor()==0:
+                        if board[-int(self.space-7)].getColor()==0 and self.space not in [8,16,24,32,1,9,17,25]:
                             return [True,self.space-7]
                     if board[-int(moves[-1])].getColor()==opposite:
                         self.OppositePos=board[-int(moves[-1])].space

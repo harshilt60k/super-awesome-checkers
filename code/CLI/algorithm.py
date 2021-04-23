@@ -3,6 +3,8 @@
 Created on Sat Apr 10 22:00:00 WAT 2021
 
 @author: Ayomide
+
+Adopted from: "Python Checkers AI Tutorial Part 2 - Implementation & Visualization (Minimax)" https://www.youtube.com/watch?v=mYbrH1Cl3nw&t=2129s by Tech with Tim
 """
 from copy import deepcopy
 from setup import piece, board
@@ -48,7 +50,7 @@ def minimax(position,depth,max_player):
                 best_move=move
         return minEval,best_move
         
-#runs possible move on a copy of the currentt board in the game
+#runs possible move on a copy of the current board in the game
 def simulate_move(piece,move,board,isJump=False,opposite=None):
     if isJump:
         AImove(board.board,piece.space,move,isJump=True,opposite=opposite)
