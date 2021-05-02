@@ -38,8 +38,8 @@ def minimax(position,depth,max_player):
             maxEval=max(maxEval,evaluation)
             if maxEval==evaluation:
                 best_move=move[0]
-                print(move[1], str(move[2])+"\n")
-                best_move.drawP()
+                #print(move[1], str(move[2])+"\n")
+                #best_move.drawP()
         return maxEval,best_move
     else:
         minEval = float('inf')
