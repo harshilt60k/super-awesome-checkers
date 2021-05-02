@@ -2,7 +2,8 @@ import pygame
 import pyautogui
 import math
 from os import path
-from TypeEngine import typer
+
+
 #add open move choices
 pygame.init()
 scrnw = int(1920)
@@ -119,15 +120,15 @@ def load():
     global pointer
     global boardsize
     pygame.font.init()
-    felt = pygame.image.load(r'greenfelt.jpg')
+    felt = pygame.image.load(r'.\greenfelt.jpg')
     felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
-    frame = pygame.image.load(r'GoldFrameTransparent.png')
+    frame = pygame.image.load(r'.\GoldFrameTransparent.png')
     frame = pygame.transform.smoothscale(frame, (int(scrnh*3/8), int(scrnh*3/8*(116/81))))
-    redprsn = pygame.image.load(r'personiconred.png')
-    blackprsn = pygame.image.load(r'personicon.png')
-    redrobot = pygame.image.load(r'redrobot.png')
-    blackrobot = pygame.image.load(r'blackrobot.png')
-    pointer = pygame.image.load(r'pointer.png')
+    redprsn = pygame.image.load(r'.\personiconred.png')
+    blackprsn = pygame.image.load(r'.\personicon.png')
+    redrobot = pygame.image.load(r'.\redrobot.png')
+    blackrobot = pygame.image.load(r'.\blackrobot.png')
+    pointer = pygame.image.load(r'.\pointer.png')
     boardsize = int(scrnh*9/10)
 
 class button():
@@ -136,10 +137,10 @@ class button():
         self.yspot = yspot
         self.name = name
         self.selected = False
-        if path.exists(r'' + name + '.png'):
-            self.pc = pygame.image.load(r'' + name + '.png')
+        if path.exists(r'code\\GUI\\' + name + '.png'):
+            self.pc = pygame.image.load(r'code\\GUI\\' + name + '.png')
         else:
-            self.pc = pygame.image.load(r'' + name + '.jpg')
+            self.pc = pygame.image.load(r'code\\GUI\\' + name + '.jpg')
 
     def do(self):
         if self.name == 'undo':
@@ -215,15 +216,15 @@ class button():
         length = int(boardsize/8*0.7)
 
         if self.selected:
-            if path.exists(r'' + self.name + 'blue.png'):
-                self.pc = pygame.image.load(r'' + self.name + 'blue.png')
+            if path.exists(r'.\\' + self.name + 'blue.png'):
+                self.pc = pygame.image.load(r'.\\' + self.name + 'blue.png')
             else:
-                self.pc = pygame.image.load(r'' + self.name + 'blue.jpg')
+                self.pc = pygame.image.load(r'.\\' + self.name + 'blue.jpg')
         else:
-            if path.exists(r'' + self.name + '.png'):
-                self.pc = pygame.image.load(r'' + self.name + '.png')
+            if path.exists(r'.\\' + self.name + '.png'):
+                self.pc = pygame.image.load(r'.\\' + self.name + '.png')
             else:
-                self.pc = pygame.image.load(r'' + self.name + '.jpg')
+                self.pc = pygame.image.load(r'.\\' + self.name + '.jpg')
         self.pc = pygame.transform.smoothscale(self.pc, (length,length))
         screen.blit(self.pc, (self.x + int(length/0.7 - length)/2, self.y + int((length/0.7 - length)/2)))
 
@@ -234,7 +235,7 @@ class piece():
     blackeaten = 0
 
     def __init__(self, x, y, xspot, yspot, color):
-        self.pc = pygame.image.load(r'' + color + '.png')
+        self.pc = pygame.image.load(r'.\\' + color + '.png')
         self.pc = pygame.transform.smoothscale(self.pc, (int(boardsize/8),int(boardsize/8)))
         self.x = int(x)
         self.y = int(y)
@@ -257,7 +258,7 @@ class piece():
 
     def makeKing(self):
         self.king = True
-        self.pc = pygame.image.load(r'' + self.color + 'king.png')
+        self.pc = pygame.image.load(r'.\\' + self.color + 'king.png')
         self.pc = pygame.transform.smoothscale(self.pc, (int(scrnh/10),int(scrnh/10)))
 
     def setX(self):
@@ -300,8 +301,8 @@ class piece():
     def motion(self, oldx, oldy, chngsize):
         rect = pygame.Rect(xx, yy, boardsize, boardsize)
         board = screen.subsurface(rect)
-        pygame.image.save(board, r'board.png')
-        board = pygame.image.load(r'board.png')
+        pygame.image.save(board, r'.\board.png')
+        board = pygame.image.load(r'.\board.png')
         xf = 0
         yf = 0
         x = self.x - oldx
@@ -314,7 +315,7 @@ class piece():
             xf = xf + x/speed
             yf = yf + y/speed
             pygame.time.wait(2)
-            self.pc = pygame.image.load(r'' + self.color + 'king'*self.king + '.png')
+            self.pc = pygame.image.load(r'.\\' + self.color + 'king'*self.king + '.png')
             self.pc = pygame.transform.smoothscale(self.pc, (int(scrnh/10+(-abs(i-speed/2)+speed/2)*grow*chngsize),int(scrnh/10+(-abs(i-speed/2)+speed/2)*grow*chngsize)))
             screen.blit(self.pc, (oldx + xf - (-abs(i-speed/2)+speed/2)*grow*chngsize/2, oldy + yf - (-abs(i-speed/2)+speed/2)*grow*chngsize/2))
             pygame.display.update()
@@ -455,30 +456,30 @@ def firstload():
     global pclist
     global piecesize
     global folder
-    robot = pygame.image.load(r'robot.png')
+    robot = pygame.image.load(r'.\robot.png')
     robot = pygame.transform.smoothscale(robot, (int(robot.get_width()*scrnh/1000),int(robot.get_height()*scrnh/1000)))
     robot = pygame.transform.flip(robot, True, False)
-    felt = pygame.image.load(r'greenfelt.jpg')
+    felt = pygame.image.load(r'.\greenfelt.jpg')
     felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
-    play = pygame.image.load(r'play.png')
+    play = pygame.image.load(r'.\play.png')
     play = pygame.transform.smoothscale(play, (int(play.get_width()*scrnh/3000), int(play.get_height()*scrnh/3000)))
-    playpress = pygame.image.load(r'playpress.png')
+    playpress = pygame.image.load(r'.\playpress.png')
     playpress = pygame.transform.smoothscale(playpress, (int(playpress.get_width()*scrnh/3000), int(playpress.get_height()*scrnh/3000)))
-    rules = pygame.image.load(r'rules.png')
+    rules = pygame.image.load(r'.\rules.png')
     rules = pygame.transform.smoothscale(rules, (int(rules.get_width()*scrnh/4800), int(rules.get_height()*scrnh/4800)))
-    rulespress = pygame.image.load(r'rulespress.png')
+    rulespress = pygame.image.load(r'.\rulespress.png')
     rulespress = pygame.transform.smoothscale(rulespress, (int(rulespress.get_width()*scrnh/4800), int(rulespress.get_height()*scrnh/4800)))
-    black = pygame.image.load(r'black.png')
+    black = pygame.image.load(r'.\black.png')
     piecesize = int(black.get_width()*scrnh/1000)
     black = pygame.transform.smoothscale(black, (piecesize, piecesize))
-    blackking = pygame.image.load(r'blackking.png')
+    blackking = pygame.image.load(r'.\blackking.png')
     blackking = pygame.transform.smoothscale(blackking, (piecesize, piecesize))
-    red = pygame.image.load(r'red.png')
+    red = pygame.image.load(r'.\red.png')
     red = pygame.transform.smoothscale(red, (piecesize, piecesize))
-    redking = pygame.image.load(r'redking.png')
+    redking = pygame.image.load(r'.\redking.png')
     redking = pygame.transform.smoothscale(redking, (piecesize, piecesize))
     pclist = [black, blackking, red, redking]
-    folder = pygame.image.load(r'open.png')
+    folder = pygame.image.load(r'.\open.png')
     folder = pygame.transform.smoothscale(folder, (int(scrnh/10), int(scrnh/10)))
 
 def firstbackground(hover, spin, pressplay, pressrules, chngrobot):
@@ -539,13 +540,13 @@ def showrules():
         scrnw = int(wh[0])
         scrnh = int(wh[0]*9/16)
         screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
-        felt = pygame.image.load(r'greenfelt.jpg')
+        felt = pygame.image.load(r'.\greenfelt.jpg')
         felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
         screen.blit(felt, (0,0))
-        wrules = pygame.image.load(r'writtenrules.png')
+        wrules = pygame.image.load(r'.\writtenrules.png')
         wrules = pygame.transform.smoothscale(wrules, (scrnw, int(scrnw*47.68/97.64)))
         screen.blit(wrules, (0, 0))
-        home = pygame.image.load(r'home.png')
+        home = pygame.image.load(r'.\home.png')
         home = pygame.transform.smoothscale(home, (int(scrnh/10), int(scrnh/10)))
         screen.blit(home, (int(scrnw-scrnh/60-home.get_width()), int(scrnh-scrnh/60-home.get_height())))
         pygame.display.update()
@@ -577,11 +578,11 @@ def showfolder():
         scrnw = int(wh[0])
         scrnh = int(wh[0]*9/16)
         screen = pygame.display.set_mode((scrnw,scrnh), pygame.RESIZABLE)
-        felt = pygame.image.load(r'greenfelt.jpg')
+        felt = pygame.image.load(r'.\greenfelt.jpg')
         felt = pygame.transform.smoothscale(felt, (scrnw, scrnh))
         screen.blit(felt, (0,0))
         
-        home = pygame.image.load(r'home.png')
+        home = pygame.image.load(r'.\home.png')
         home = pygame.transform.smoothscale(home, (int(scrnh/10), int(scrnh/10)))
         screen.blit(home, (int(scrnw-scrnh/60-home.get_width()), int(scrnh-scrnh/60-home.get_height())))
         pygame.display.update()

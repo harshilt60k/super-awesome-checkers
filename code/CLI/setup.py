@@ -190,14 +190,14 @@ class board():
                 i[j].checkPromote()
                 #if it is an even row, print a space before each piece
                 if count==0:
-                    print(' ',end='')
+                    print('  ',end=' ')
                     color =i[j].getColor() if not i[j].king else i[j].getColor().upper()
-                    print(color,end='')
+                    print(color,end=' ')
                     #if it is an odd row, print a space after each piece
                 else:
                     color =i[j].getColor() if not i[j].king else i[j].getColor().upper()
-                    print(color,end='')
-                    print(' ',end='')
+                    print(color,end=' ')
+                    print('  ',end=' ')
                     #after each row, print a new line
             print()
         #then change the row to the opposite type(odd or even)

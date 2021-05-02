@@ -34,20 +34,22 @@ def minimax(position,depth,max_player):
         best_move=None
         #checks each move outlined in the get_all_moves function then recursively runs this function again and again until the deptth is zero
         for move in get_all_moves(position,"w"):
-            evaluation=minimax(move,depth-1,False)[0]
+            evaluation=minimax(move[0],depth-1,False)[0]
             maxEval=max(maxEval,evaluation)
             if maxEval==evaluation:
-                best_move=move
+                best_move=move[0]
+                print(move[1], str(move[2])+"\n")
+                best_move.drawP()
         return maxEval,best_move
     else:
         minEval = float('inf')
         best_move=None
         for move in get_all_moves(position,"b"):
-            evaluation=minimax(move,depth-1,True)[0]
+            evaluation=minimax(move[0],depth-1,True)[0]
             minEval=min(minEval,evaluation)
             #print(minEval)
             if minEval==evaluation:
-                best_move=move
+                best_move=move[0]
         return minEval,best_move
         
 #runs possible move on a copy of the current board in the game
@@ -79,12 +81,14 @@ def get_all_moves(board,color):
             temp_piece=deepcopy(piece)
             if jumps==None:
                 new_board=simulate_move(temp_piece,valid_moves[move], temp_board)
-            elif jumps!=None:
+            elif jumps!=None and valid_moves[move]!=jumps:
+                new_board=simulate_move(temp_piece,valid_moves[move], temp_board)
+            elif jumps!=None and valid_moves[move]==jumps:
                 new_board=simulate_move(temp_piece,valid_moves[move], temp_board,isJump=True,opposite=oppositePos)
             
             if new_board==0:
                     pass
             else:
-                moves.append(new_board)
+                moves.append((new_board,piece.getSpace(),valid_moves[move]))
 
     return moves
