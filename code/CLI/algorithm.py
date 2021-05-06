@@ -26,34 +26,42 @@ def AImove(board,start,stop, isJump=False,opposite=None):
         return 0
     return board
     
-def minimax(position,depth,max_player):
-    #checks if the depth is greater than zero and that no one has won the game yet
-    if depth ==0 or position.checkWinner()!=None:
-        return position.evaluate(),position
-    #checks that the max player is set, and is always set to white as we would want to play with the White as the AI
+def minimax(position, depth, max_player,alpha=0, beta = 0):
+    # checks if the depth is greater than zero and that no one has won the game yet
+    if depth == 0 or position.checkWinner() != None:
+        return position.evaluate(), position
+    # checks that the max player is set, and is always set to white as we would want to play with the White as the AI
     if max_player:
         maxEval = float('-inf')
-        best_move=None
-        #checks each move outlined in the get_all_moves function then recursively runs this function again and again until the deptth is zero
-        for move in get_all_moves(position,"w"):
-            evaluation=minimax(move[0],depth-1,False)[0]
-            maxEval=max(maxEval,evaluation)
-            if maxEval==evaluation:
-                best_move=move[0]
-                #print(move[1], str(move[2])+"\n")
-                #best_move.drawP()
-        return maxEval,best_move
+        best_move = None
+        # checks each move outlined in the get_all_moves function then recursively runs this function again and again until the deptth is zero
+        for move in get_all_moves(position, "w"):
+            evaluation = minimax(move[0], depth - 1,False, alpha, beta)[0]
+            maxEval = max(maxEval, evaluation)
+            alpha = max(alpha, evaluation)
+            if beta <= alpha:
+                break
+            else:
+                best_move = move
+            # if maxEval == evaluation:
+            #     best_move = move
+        return maxEval, best_move
     else:
         minEval = float('inf')
-        best_move=None
-        for move in get_all_moves(position,"b"):
-            evaluation=minimax(move[0],depth-1,True)[0]
-            minEval=min(minEval,evaluation)
-            #print(minEval)
-            if minEval==evaluation:
-                best_move=move[0]
-        return minEval,best_move
-        
+        best_move = None
+        for move in get_all_moves(position, "b"):
+            evaluation = minimax(move[0], depth - 1, True,alpha, beta)[0]
+            minEval = min(minEval, evaluation)
+            beta = min(beta, evaluation)
+            if beta <= alpha:
+                break
+            else:
+                best_move = move
+            # print(minEval)
+            # if minEval == evaluation:
+            #     best_move = move
+        return minEval, best_move
+
 #runs possible move on a copy of the current board in the game
 def simulate_move(piece,move,board,isJump=False,opposite=None):
     if isJump:
