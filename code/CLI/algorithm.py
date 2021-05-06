@@ -26,7 +26,7 @@ def AImove(board,start,stop, isJump=False,opposite=None):
         return 0
     return board
     
-def minimax(position, depth, max_player,alpha=0, beta = 0):
+def minimax(position, depth, max_player,alpha=float('-inf'), beta = float('inf')):
     # checks if the depth is greater than zero and that no one has won the game yet
     if depth == 0 or position.checkWinner() != None:
         return position.evaluate(), position

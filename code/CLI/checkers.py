@@ -130,7 +130,7 @@ while True:
         undo=input("Do you want to undo the move?(y/n) ")
         if undo=="y":
             undo(p.board)
-        p.drawP()
+        
         
         
     elif turn==0:
@@ -159,8 +159,8 @@ while True:
         break
     #Change the turn to the next player's turn
     if turn==1 and AIorPerson=="1":
-        value,new_board= minimax(p,2,"w")
-        p=new_board
+        value,new_board= minimax(p,5,"w")
+        p=new_board[0]
         turn=0
         print("Black's turn\n\n")
     elif turn==1 and AIorPerson!="1":
