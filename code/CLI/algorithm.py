@@ -9,6 +9,8 @@ Adopted from: "Python Checkers AI Tutorial Part 2 - Implementation & Visualizati
 from copy import deepcopy
 from setup import piece, board
 #This is to evaluate moves from the minimax AI and test out those moves sfrom the Simulate move function 
+
+
 def AImove(board,start,stop, isJump=False,opposite=None):
     if isJump and board[-int(stop)].color==0:
         board[-int(stop)]=board[-int(start)]

@@ -9,9 +9,10 @@ from algorithm import minimax
 import numpy as np
 whiteC=0
 blackC=0
-
+#for the undo function
+originalPosition=0
+currentPosition=0
 #Hello world
-
 '''
 valid moves are index + 3,4,5 if black pieces
                 index +/- 3,4,5 if black kings
@@ -23,11 +24,10 @@ The following print statements find if it is a valid move for black or white
 print((-int(move[1])+4==-int(move[0])) or (-int(move[1])+5==-int(move[0])) or (-int(move[1])+3==-int(move[0])))
 print((-int(move[1])-4==-int(move[0])) or (-int(move[1])-5==-int(move[0])) or (-int(move[1])-3==-int(move[0])))
 '''
-
-
-
 #Function that changes position on the board
 def makeMove(board,turn):
+    global currentPosition
+    global originalPosition
     #take the move as an input
     mv=input("Enter move in format(11-15, 11x15 for jump): ")
     if 'x' in mv:
@@ -52,10 +52,14 @@ def makeMove(board,turn):
         if turn==0:
             #Upgrade piece to king, "kb" signifies a promoted piece -Ayo
             if board[-int(move[1])].color==0 and board[-int(move[0])].color=='b' and int(move[1]) in board[-int(move[0])].posMoves():
+                
+                
+                originalPosition=board[-int(move[0])].space
                 board[-int(move[1])]=board[-int(move[0])]
                 board[-int(move[1])].changeSpace(int(move[1]))
                 board[-int(move[0])]=piece(int(move[0]),0)
                 print(f"This is current space: { board[-int(move[1])].space }")
+                currentPosition=board[-int(move[1])].space
                 return board
             else:
                 print("Invalid move.")
@@ -64,9 +68,13 @@ def makeMove(board,turn):
         else:
             #Promote piece to king, "kw" signifies a promoted piece -Ayo
             if board[-int(move[1])].color==0 and board[-int(move[0])].color=='w' and (int(move[1]) in board[-int(move[0])].posMoves()) :
+                
+                originalPosition=board[-int(move[0])].space
                 board[-int(move[1])]=board[-int(move[0])]
                 board[-int(move[1])].changeSpace(int(move[1]))
                 board[-int(move[0])]=piece(int(move[0]),0)
+                print(f"This is current space: { board[-int(move[1])].space }")
+                currentPosition=board[-int(move[1])].space
                 return board
             else:
                 print("Invalid move.")
@@ -94,7 +102,14 @@ def makeJump(board, turn, move):
     board[-int(move[0])]=piece(int(move[0]),0)
     board[-int(move[1])]=piece(int(move[0]),0)
     return board       
-        
+def undo(board):
+    global currentPosition
+    global originalPosition
+    for piece in board:
+        if piece.space==currentPosition:
+            piece.changeSpace(originalPosition)
+    return board
+    
 #Initialize the board with values of 0 for 32 spaces
 p=board()
 #initialize the turn as 0
@@ -111,8 +126,21 @@ while True:
     #ask for a move
     if turn==1 and AIorPerson!="1":
         makeMove(p.board,turn)
+        print(originalPosition,currentPosition)
+        undo=input("Do you want to undo the move?(y/n) ")
+        if undo=="y":
+            undo(p.board)
+        p.drawP()
+        
+        
     elif turn==0:
         makeMove(p.board,turn)
+        print(originalPosition,currentPosition)
+        undoQ=input("Do you want to undo the move?(y/n) ")
+        if undoQ=="y":
+            undo(p.board)
+        p.drawP()
+        
     else:
         pass
     #Formatting print statements
