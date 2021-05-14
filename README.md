@@ -1,3 +1,3 @@
 # Super Awesome Checkers
 
-[a link](code/CLI/README.md)
+[Link to README for CLI](code/CLI/README.md)
