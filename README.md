@@ -5,7 +5,10 @@
 
 
 # System Requirements
-
+- python > 3.8.0
+- pygame > 2.0.0
+- numpy  > 1.19.5
+- pyautogui > 0.9.52
 
 ---
 
