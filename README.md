@@ -6,7 +6,7 @@
 
 # System Requirements
 - python > 3.8.0
-- pygame > 2.0.0
+- pygame = 2.0.0
 - numpy  > 1.19.5
 - pyautogui > 0.9.52
 
@@ -18,6 +18,9 @@
 ---
 
 # Contact
-
+Jake Dreher - jjd358@drexel.edu
+Harshil Thakur - ht377@drexel.edu
+Dubem Okoye - do123@drexel.edu
+Ayomide Adetunji - aa123@drexel.edu
 
 ---
