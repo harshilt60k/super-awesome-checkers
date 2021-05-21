@@ -7,6 +7,7 @@ Created on Thu Feb 11 21:14:09 2021
 from setup import piece, board
 from algorithm import minimax
 import numpy as np
+from copy import deepcopy
 whiteC=0
 blackC=0
 #for the undo function
@@ -102,13 +103,6 @@ def makeJump(board, turn, move):
     board[-int(move[0])]=piece(int(move[0]),0)
     board[-int(move[1])]=piece(int(move[0]),0)
     return board       
-def undo(board):
-    global currentPosition
-    global originalPosition
-    for piece in board:
-        if piece.space==currentPosition:
-            piece.changeSpace(originalPosition)
-    return board
     
 #Initialize the board with values of 0 for 32 spaces
 p=board()
@@ -119,27 +113,80 @@ turn=0
 #start the game loop
 AIorPerson=input("Do you wanna play with the AI(Input 1) or Another person(Input 2)? ")
 print("Black's turn\n\n")
+boardSequence = []
+sequenceNum=0
+boardSequence.append((deepcopy(p),sequenceNum,turn ))
 while True:
     #Print the board
+    
     
     p.drawP()
     #ask for a move
     if turn==1 and AIorPerson!="1":
         makeMove(p.board,turn)
         print(originalPosition,currentPosition)
-        undo=input("Do you want to undo the move?(y/n) ")
-        if undo=="y":
-            undo(p.board)
-        
-        
+        sequenceNum+=1
+        boardSequence.append((deepcopy(p),sequenceNum,turn-1 ))
+        p.drawP()
+        newturn=None
+        while True:
+            undoQ=input("Do you want to undo the move?(y/n) ")
+            if undoQ=="y":
+                if len(boardSequence)==1:
+                    p=boardSequence[-1][0]
+                    newturn = boardSequence[-1][2]
+                elif len(boardSequence)>=2:
+                    p=boardSequence[-2][0]
+                    newturn = boardSequence[-2][2]
+                else: 
+                    turn=newturn
+                    print("You cannot undo any further! ")
+                    break
+                boardSequence.pop()
+                p.drawP()
+            elif undoQ=="n":
+                if newturn!=None:
+                    turn=newturn
+                    break
+                else:
+                    turn=0
+                    break
+            else:
+                break
         
     elif turn==0:
         makeMove(p.board,turn)
         print(originalPosition,currentPosition)
-        undoQ=input("Do you want to undo the move?(y/n) ")
-        if undoQ=="y":
-            undo(p.board)
-        p.drawP()
+        sequenceNum+=1
+        boardSequence.append((deepcopy(p),sequenceNum,turn+1 ))
+        
+        newturn=None
+        while True:
+            undoQ=input("Do you want to undo the move?(y/n) ")
+            if undoQ=="y" :
+                if len(boardSequence)==1:
+                    p=boardSequence[-1][0]
+                    newturn = boardSequence[-1][2]
+                elif len(boardSequence)>=2:
+                    p=boardSequence[-2][0]
+                    newturn = boardSequence[-2][2]
+                else: 
+                    turn=newturn
+                    print("You cannot undo any further! ")
+                    break
+                boardSequence.pop()
+                p.drawP()
+            elif undoQ=="n":
+                if newturn!=None:
+                    turn=newturn
+                    break
+                else:
+                    turn=1
+                    break
+                break
+            else:
+                break
+
         
     else:
         pass
@@ -148,7 +195,9 @@ while True:
     print('-'*10)
     print()
     #Ask if the game should end
+    
     if input("Continue playing?(q to quit)")=='q':
+
         break
     #Formatting print statements
     print()
@@ -159,14 +208,19 @@ while True:
         break
     #Change the turn to the next player's turn
     if turn==1 and AIorPerson=="1":
-        value,new_board= minimax(p,5,"w")
+        value,new_board= minimax(p,4,"w")
         p=new_board[0]
         turn=0
         print("Black's turn\n\n")
-    elif turn==1 and AIorPerson!="1":
-        
+    elif turn == 0:
+        print("Black's turn\n\n")
+    else:
+        print("White's turn\n\n")
+
+'''
+elif turn==1 and AIorPerson!="1":
         turn=0
         print("Black's turn\n\n")
     else:
         turn=1
-        print("White's turn\n\n")
+        print("White's turn\n\n") '''
