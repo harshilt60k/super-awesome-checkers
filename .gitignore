@@ -22,3 +22,7 @@ code/GUI/settings.png
 code/GUI/settingsblue.png
 code/GUI/undo.jpg
 code/GUI/undoblue.png
+code/CLI/venv/*
+code/CLI/build/*
+code/CLI/dist/*
+code/CLI/checkers.spec

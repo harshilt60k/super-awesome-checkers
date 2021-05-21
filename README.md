@@ -12,15 +12,12 @@
 
 ---
 
-# Installation
-
-
 ---
 
 # Contact
 Jake Dreher - jjd358@drexel.edu
 Harshil Thakur - ht377@drexel.edu
 Dubem Okoye - do123@drexel.edu
-Ayomide Adetunji - aa123@drexel.edu
+Ayomide Adetunji - aa4449@drexel.edu
 
 ---
